@@ -1,4 +1,6 @@
 import { createApp } from 'vue'
+import './styles/tokens.css'
+import './styles/base.css'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
 import Dashboard from './views/Dashboard.vue'

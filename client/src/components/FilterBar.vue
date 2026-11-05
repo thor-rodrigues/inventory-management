@@ -4,7 +4,8 @@
       <div class="filters-grid">
         <div class="filter-group">
           <label>{{ t('filters.timePeriod') }}</label>
-          <select v-model="selectedPeriod" class="filter-select">
+          <div class="select-wrap">
+            <select v-model="selectedPeriod" class="filter-select">
             <option value="all">{{ t('filters.allMonths') }}</option>
             <option value="2025-01">{{ t('months.january') }}</option>
             <option value="2025-02">{{ t('months.february') }}</option>
@@ -19,21 +20,27 @@
             <option value="2025-11">{{ t('months.november') }}</option>
             <option value="2025-12">{{ t('months.december') }}</option>
           </select>
+            <svg class="select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
+          </div>
         </div>
 
         <div class="filter-group">
           <label>{{ t('filters.location') }}</label>
-          <select v-model="selectedLocation" class="filter-select">
+          <div class="select-wrap">
+            <select v-model="selectedLocation" class="filter-select">
             <option value="all">{{ t('filters.all') }}</option>
             <option value="San Francisco">{{ t('warehouses.sanFrancisco') }}</option>
             <option value="London">{{ t('warehouses.london') }}</option>
             <option value="Tokyo">{{ t('warehouses.tokyo') }}</option>
           </select>
+            <svg class="select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
+          </div>
         </div>
 
         <div class="filter-group">
           <label>{{ t('filters.category') }}</label>
-          <select v-model="selectedCategory" class="filter-select">
+          <div class="select-wrap">
+            <select v-model="selectedCategory" class="filter-select">
             <option value="all">{{ t('filters.all') }}</option>
             <option value="circuit boards">{{ t('categories.circuitBoards') }}</option>
             <option value="sensors">{{ t('categories.sensors') }}</option>
@@ -41,17 +48,22 @@
             <option value="controllers">{{ t('categories.controllers') }}</option>
             <option value="power supplies">{{ t('categories.powerSupplies') }}</option>
           </select>
+            <svg class="select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
+          </div>
         </div>
 
         <div class="filter-group">
           <label>{{ t('filters.orderStatus') }}</label>
-          <select v-model="selectedStatus" class="filter-select">
+          <div class="select-wrap">
+            <select v-model="selectedStatus" class="filter-select">
             <option value="all">{{ t('filters.all') }}</option>
             <option value="delivered">{{ t('status.delivered') }}</option>
             <option value="shipped">{{ t('status.shipped') }}</option>
             <option value="processing">{{ t('status.processing') }}</option>
             <option value="backordered">{{ t('status.backordered') }}</option>
           </select>
+            <svg class="select-chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" /></svg>
+          </div>
         </div>
       </div>
 
@@ -60,10 +72,12 @@
         @click="resetFilters"
         :disabled="!hasActiveFilters"
         title="Reset all filters"
+        aria-label="Reset all filters"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
         </svg>
+        <span v-if="hasActiveFilters" class="active-dot" aria-hidden="true"></span>
       </button>
     </div>
   </div>
@@ -102,93 +116,146 @@ export default {
 
 <style scoped>
 .filters-bar {
-  background: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 0.75rem 0;
   position: sticky;
-  top: 70px;
-  z-index: 90;
+  top: var(--topbar-h);
+  z-index: var(--z-sticky);
+  height: var(--filterbar-h);
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .filters-container {
-  max-width: 1600px;
+  height: 100%;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 var(--space-8);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
 .filters-grid {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-5);
   flex: 1;
+  min-width: 0;
 }
 
 .filter-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
+  flex-shrink: 0;
 }
 
 .filter-group label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #64748b;
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 
+.select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .filter-select {
-  padding: 0.4rem 0.75rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.813rem;
-  color: #0f172a;
-  background: white;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 32px;
+  min-width: 128px;
+  padding: 0 var(--space-8) 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-sm);
   cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-  min-width: 140px;
+  transition: border-color var(--duration) var(--ease);
 }
 
 .filter-select:hover {
-  border-color: #94a3b8;
+  border-color: var(--color-border-strong);
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--focus-ring);
+}
+
+/* Chevron is an inline SVG using currentColor so it adapts to both themes */
+.select-chevron {
+  position: absolute;
+  right: var(--space-2);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--color-text-muted);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .reset-filters-btn {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
 }
 
 .reset-filters-btn:hover:not(:disabled) {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: var(--color-surface-muted);
+  color: var(--color-text);
 }
 
 .reset-filters-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .reset-filters-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Small dot shown while any filter is active */
+.active-dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  border: 2px solid var(--color-bg);
+  box-sizing: content-box;
+  transform: translate(25%, -25%);
+}
+
+@media (max-width: 767px) {
+  .filters-container {
+    padding: 0 var(--space-4);
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .filters-grid {
+    flex: none;
+    gap: var(--space-4);
+  }
 }
 </style>

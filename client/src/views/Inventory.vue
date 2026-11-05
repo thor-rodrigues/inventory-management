@@ -8,9 +8,12 @@
     <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
-      <div class="card">
+      <div class="card card-flush">
         <div class="card-header">
-          <h3 class="card-title">{{ t('inventory.stockLevels') }} ({{ filteredItems.length }} {{ t('inventory.skus') }})</h3>
+          <div class="card-heading">
+            <h3 class="card-title">{{ t('inventory.stockLevels') }}</h3>
+            <span class="card-subtitle">{{ filteredItems.length }} {{ t('inventory.skus') }}</span>
+          </div>
           <div class="search-box">
             <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
@@ -19,13 +22,14 @@
               v-model="searchQuery"
               type="text"
               :placeholder="t('inventory.searchPlaceholder')"
-              class="search-input"
+              class="input search-input"
             />
             <button
               v-if="searchQuery"
               @click="searchQuery = ''"
               class="clear-search"
               :title="t('inventory.clearSearch')"
+              :aria-label="t('inventory.clearSearch')"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
@@ -40,10 +44,10 @@
                 <th>{{ t('inventory.table.sku') }}</th>
                 <th>{{ t('inventory.table.itemName') }}</th>
                 <th>{{ t('inventory.table.category') }}</th>
-                <th>{{ t('inventory.table.quantityOnHand') }}</th>
-                <th>{{ t('inventory.table.reorderPoint') }}</th>
-                <th>{{ t('inventory.table.unitCost') }}</th>
-                <th>{{ t('inventory.table.totalValue') }}</th>
+                <th class="num">{{ t('inventory.table.quantityOnHand') }}</th>
+                <th class="num">{{ t('inventory.table.reorderPoint') }}</th>
+                <th class="num">{{ t('inventory.table.unitCost') }}</th>
+                <th class="num">{{ t('inventory.table.totalValue') }}</th>
                 <th>{{ t('inventory.table.location') }}</th>
                 <th>{{ t('inventory.table.status') }}</th>
               </tr>
@@ -55,13 +59,13 @@
                 class="clickable-row"
                 @click="showItemDetail(item)"
               >
-                <td><strong>{{ item.sku }}</strong></td>
+                <td class="sku"><strong>{{ item.sku }}</strong></td>
                 <td>{{ translateProductName(item.name) }}</td>
                 <td>{{ translateCategory(item.category) }}</td>
-                <td><strong>{{ item.quantity_on_hand }}</strong></td>
-                <td>{{ item.reorder_point }}</td>
-                <td>{{ currencySymbol }}{{ item.unit_cost.toFixed(2) }}</td>
-                <td><strong>{{ currencySymbol }}{{ (item.quantity_on_hand * item.unit_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</strong></td>
+                <td class="num"><strong>{{ item.quantity_on_hand }}</strong></td>
+                <td class="num">{{ item.reorder_point }}</td>
+                <td class="num">{{ currencySymbol }}{{ item.unit_cost.toFixed(2) }}</td>
+                <td class="num"><strong>{{ currencySymbol }}{{ (item.quantity_on_hand * item.unit_cost).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}</strong></td>
                 <td>{{ translateWarehouse(item.location) }}</td>
                 <td>
                   <span :class="['badge', getStockStatusClass(item)]">
@@ -225,115 +229,98 @@ export default {
 </script>
 
 <style scoped>
-.page-header {
-  margin-bottom: 1.5rem;
+/* Table sits edge-to-edge inside the card */
+.card-flush {
+  padding: 0;
+  overflow: hidden;
 }
 
-.page-header h2 {
-  margin-bottom: 0.25rem;
+.card-flush .card-header {
+  margin-bottom: 0;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
 }
 
-.page-header p {
-  color: #64748b;
-  font-size: 0.875rem;
+.card-flush .table-container {
+  border: 0;
+  border-radius: 0;
 }
 
-.card-header {
+.card-heading {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  align-items: baseline;
+  gap: var(--space-3);
 }
 
-.card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #0f172a;
-  margin: 0;
+.sku {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+}
+
+.sku strong {
+  font-weight: var(--weight-medium);
 }
 
 .search-box {
   position: relative;
   display: flex;
   align-items: center;
-  min-width: 300px;
+  width: 320px;
+  max-width: 100%;
 }
 
 .search-icon {
   position: absolute;
-  left: 0.75rem;
-  width: 18px;
-  height: 18px;
-  color: #94a3b8;
+  left: var(--space-3);
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-subtle);
   pointer-events: none;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.5rem 2.5rem 0.5rem 2.5rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  color: #0f172a;
-  background: #f8fafc;
-  transition: all 0.2s;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  padding: 0 var(--space-8);
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: var(--color-text-subtle);
 }
 
 .clear-search {
   position: absolute;
-  right: 0.5rem;
+  right: var(--space-2);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem;
+  padding: var(--space-1);
   background: transparent;
   border: none;
-  border-radius: 4px;
-  color: #94a3b8;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-subtle);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color var(--duration) var(--ease), color var(--duration) var(--ease);
 }
 
 .clear-search:hover {
-  background: #e2e8f0;
-  color: #64748b;
+  background: var(--color-surface-muted);
+  color: var(--color-text);
 }
 
 .clear-search svg {
-  width: 18px;
-  height: 18px;
-}
-
-.loading,
-.error {
-  padding: 2rem;
-  text-align: center;
-  color: #64748b;
-}
-
-.error {
-  color: #ef4444;
+  width: 16px;
+  height: 16px;
 }
 
 .clickable-row {
   cursor: pointer;
-  transition: background-color 0.15s ease;
 }
 
-.clickable-row:hover {
-  background: #eff6ff !important;
+@media (max-width: 768px) {
+  .search-box {
+    width: 100%;
+  }
 }
 </style>

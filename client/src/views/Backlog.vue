@@ -27,13 +27,14 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card card-flush">
         <div class="card-header">
           <h3 class="card-title">Backlog Items</h3>
+          <span class="card-subtitle">{{ backlogItems.length }}</span>
         </div>
-        <div v-if="backlogItems.length === 0" style="padding: 3rem; text-align: center;">
-          <p style="font-size: 1.125rem; color: #10b981; font-weight: 600;">
-            ✓ No backlog items - all orders can be fulfilled!
+        <div v-if="backlogItems.length === 0" class="empty-state">
+          <p class="empty-success">
+            No backlog items - all orders can be fulfilled!
           </p>
         </div>
         <div v-else class="table-container">
@@ -43,27 +44,27 @@
                 <th>Order ID</th>
                 <th>SKU</th>
                 <th>Item Name</th>
-                <th>Quantity Needed</th>
-                <th>Quantity Available</th>
-                <th>Shortage</th>
-                <th>Days Delayed</th>
+                <th class="num">Quantity Needed</th>
+                <th class="num">Quantity Available</th>
+                <th class="num">Shortage</th>
+                <th class="num">Days Delayed</th>
                 <th>Priority</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in backlogItems" :key="item.id">
-                <td><strong>{{ item.order_id }}</strong></td>
-                <td><strong>{{ item.item_sku }}</strong></td>
+                <td class="id"><strong>{{ item.order_id }}</strong></td>
+                <td class="id"><strong>{{ item.item_sku }}</strong></td>
                 <td>{{ item.item_name }}</td>
-                <td>{{ item.quantity_needed }}</td>
-                <td>{{ item.quantity_available }}</td>
-                <td>
+                <td class="num">{{ item.quantity_needed }}</td>
+                <td class="num">{{ item.quantity_available }}</td>
+                <td class="num">
                   <span class="badge danger">
                     {{ item.quantity_needed - item.quantity_available }} units short
                   </span>
                 </td>
-                <td>
-                  <span :style="{ color: item.days_delayed > 7 ? '#ef4444' : '#f59e0b' }">
+                <td class="num">
+                  <span :style="{ color: item.days_delayed > 7 ? 'var(--color-danger)' : 'var(--color-warning)' }">
                     {{ item.days_delayed }} days
                   </span>
                 </td>
@@ -150,3 +151,38 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.card-flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-flush .card-header {
+  margin-bottom: 0;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  justify-content: flex-start;
+}
+
+.card-flush .table-container {
+  border: 0;
+  border-radius: 0;
+}
+
+.id {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+}
+
+.id strong {
+  font-weight: var(--weight-medium);
+}
+
+.empty-success {
+  color: var(--color-success);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-lg);
+}
+</style>

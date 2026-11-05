@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Factory Inventory Management System</title>
+  <script>
+    // Apply the saved theme before first paint so dark mode doesn't flash light.
+    // Mirrors useTheme(): 'light' | 'dark' | 'system' (default) stored under 'app-theme'.
+    (function () {
+      var pref = 'system';
+      try { pref = localStorage.getItem('app-theme') || 'system'; } catch (e) {}
+      var dark = pref === 'dark' || (pref !== 'light' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    })();
+  </script>
 </head>
 <body>
   <div id="app"></div>

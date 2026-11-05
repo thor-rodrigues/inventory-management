@@ -6,8 +6,24 @@ export default {
     orders: '注文',
     finance: '財務',
     demandForecast: '需要予測',
+    reports: 'レポート',
     companyName: '触媒コンポーネンツ',
-    subtitle: '在庫管理システム'
+    subtitle: '在庫管理システム',
+    groupOperations: 'オペレーション',
+    groupInsights: 'インサイト',
+    collapseSidebar: 'サイドバーを折りたたむ',
+    expandSidebar: 'サイドバーを展開',
+    openNavigation: 'ナビゲーションを開く',
+    closeNavigation: 'ナビゲーションを閉じる',
+    primaryNavigation: 'メイン'
+  },
+
+  // テーマ
+  theme: {
+    label: 'テーマ',
+    light: 'ライト',
+    dark: 'ダーク',
+    system: 'システム'
   },
 
   // Dashboard
